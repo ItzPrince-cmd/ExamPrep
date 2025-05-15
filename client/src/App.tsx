@@ -12,14 +12,25 @@ import Templates from "@/pages/Templates";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import Help from "@/pages/Help";
+import Login from "@/pages/auth/Login";
+import Signup from "@/pages/auth/Signup";
+import OnboardingFlow from "@/pages/auth/OnboardingFlow";
+import TestInterface from "@/pages/TestInterface";
+import LandingPage from "@/pages/LandingPage";
 import { useState, useEffect } from "react";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-function App() {
+function AppContent() {
   // Using simple state instead of context for initial render
-  const [showTrialBanner, setShowTrialBanner] = useState(true);
+  const [showTrialBanner, setShowTrialBanner] = useState(() => {
+    // Check localStorage for saved preference, default to false (hidden)
+    return localStorage.getItem('showTrialBanner') === 'true' ? true : false;
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
   
   // Simulate loading state
   useEffect(() => {
@@ -32,11 +43,12 @@ function App() {
   
   const dismissTrialBanner = () => {
     setShowTrialBanner(false);
+    localStorage.setItem('showTrialBanner', 'false');
   };
   
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary/5 to-secondary/5">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10">
         <div className="flex flex-col items-center justify-center">
           <div className="h-16 w-16 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-2xl animate-pulse">
             EP
@@ -48,26 +60,62 @@ function App() {
   }
   
   return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {isAuthenticated && location.pathname !== '/test' && location.pathname !== '/' && <Navbar />}
+      {isAuthenticated && showTrialBanner && location.pathname !== '/test' && location.pathname !== '/' && <TrialBanner onDismiss={dismissTrialBanner} />}
+      <div className="flex-1">
+        <Switch>
+          {/* Landing Page */}
+          <Route path="/" component={LandingPage} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/onboarding" component={OnboardingFlow} />
+          
+          {/* Test Interface - No Navigation UI */}
+          <Route path="/test">
+            <ProtectedRoute component={TestInterface} />
+          </Route>
+          
+          {/* Protected Routes */}
+          <Route path="/dashboard">
+            <ProtectedRoute component={Dashboard} />
+          </Route>
+          <Route path="/question-bank">
+            <ProtectedRoute component={QuestionBank} />
+          </Route>
+          <Route path="/saved-papers">
+            <ProtectedRoute component={SavedPapers} />
+          </Route>
+          <Route path="/templates">
+            <ProtectedRoute component={Templates} />
+          </Route>
+          <Route path="/settings">
+            <ProtectedRoute component={Settings} />
+          </Route>
+          <Route path="/profile">
+            <ProtectedRoute component={Profile} />
+          </Route>
+          <Route path="/help">
+            <ProtectedRoute component={Help} />
+          </Route>
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+      {isAuthenticated && location.pathname !== '/test' && location.pathname !== '/' && <Footer />}
+      <Toaster />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="examprep-theme">
-        <div className="min-h-screen flex flex-col bg-background text-foreground">
-          <Navbar />
-          {showTrialBanner && <TrialBanner onDismiss={dismissTrialBanner} />}
-          <div className="flex-1">
-            <Switch>
-              <Route path="/" component={Dashboard} />
-              <Route path="/question-bank" component={QuestionBank} />
-              <Route path="/saved-papers" component={SavedPapers} />
-              <Route path="/templates" component={Templates} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/help" component={Help} />
-              <Route component={NotFound} />
-            </Switch>
-          </div>
-          <Footer />
-          <Toaster />
-        </div>
+      <ThemeProvider defaultTheme="dark" storageKey="examprep-theme">
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
