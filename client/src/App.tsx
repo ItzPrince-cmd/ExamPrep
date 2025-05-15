@@ -16,10 +16,7 @@ import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
 import OnboardingFlow from "@/pages/auth/OnboardingFlow";
 import TestInterface from "@/pages/TestInterface";
-<<<<<<< HEAD
 import LandingPage from "@/pages/LandingPage";
-=======
->>>>>>> 900ec97cecd78cfd82041568769823536cf71f11
 import { useState, useEffect } from "react";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
@@ -64,7 +61,6 @@ function AppContent() {
   
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-<<<<<<< HEAD
       {isAuthenticated && location.pathname !== '/test' && location.pathname !== '/' && <Navbar />}
       {isAuthenticated && showTrialBanner && location.pathname !== '/test' && location.pathname !== '/' && <TrialBanner onDismiss={dismissTrialBanner} />}
       <div className="flex-1">
@@ -72,12 +68,6 @@ function AppContent() {
           {/* Landing Page */}
           <Route path="/" component={LandingPage} />
           
-=======
-      {isAuthenticated && location.pathname !== '/test' && <Navbar />}
-      {isAuthenticated && showTrialBanner && location.pathname !== '/test' && <TrialBanner onDismiss={dismissTrialBanner} />}
-      <div className="flex-1">
-        <Switch>
->>>>>>> 900ec97cecd78cfd82041568769823536cf71f11
           {/* Auth Routes */}
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
@@ -89,13 +79,8 @@ function AppContent() {
           </Route>
           
           {/* Protected Routes */}
-<<<<<<< HEAD
           <Route path="/dashboard">
             <ProtectedRoute component={Dashboard} />
-=======
-          <Route path="/">
-            {isAuthenticated ? <Dashboard /> : <Login />}
->>>>>>> 900ec97cecd78cfd82041568769823536cf71f11
           </Route>
           <Route path="/question-bank">
             <ProtectedRoute component={QuestionBank} />
@@ -118,11 +103,7 @@ function AppContent() {
           <Route component={NotFound} />
         </Switch>
       </div>
-<<<<<<< HEAD
       {isAuthenticated && location.pathname !== '/test' && location.pathname !== '/' && <Footer />}
-=======
-      {isAuthenticated && location.pathname !== '/test' && <Footer />}
->>>>>>> 900ec97cecd78cfd82041568769823536cf71f11
       <Toaster />
     </div>
   );
@@ -131,11 +112,7 @@ function AppContent() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-<<<<<<< HEAD
       <ThemeProvider defaultTheme="dark" storageKey="examprep-theme">
-=======
-      <ThemeProvider defaultTheme="light" storageKey="examprep-theme">
->>>>>>> 900ec97cecd78cfd82041568769823536cf71f11
         <AuthProvider>
           <AppContent />
         </AuthProvider>
