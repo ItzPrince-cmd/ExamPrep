@@ -63,7 +63,7 @@ export default function OnboardingFlow() {
 
   const completeOnboarding = async () => {
     // In a real app, you would submit all collected data
-    setLocation('/');
+    setLocation('/dashboard');
   };
 
   const getStepTitle = () => {

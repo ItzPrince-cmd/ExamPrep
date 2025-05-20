@@ -22,6 +22,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
 
 function AppContent() {
   // Using simple state instead of context for initial render
@@ -66,11 +67,17 @@ function AppContent() {
       <div className="flex-1">
         <Switch>
           {/* Landing Page */}
-          <Route path="/" component={LandingPage} />
+          <Route path="/">
+            <RedirectIfAuthenticated component={LandingPage} />
+          </Route>
           
           {/* Auth Routes */}
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+          <Route path="/login">
+            <RedirectIfAuthenticated component={Login} />
+          </Route>
+          <Route path="/signup">
+            <RedirectIfAuthenticated component={Signup} />
+          </Route>
           <Route path="/onboarding" component={OnboardingFlow} />
           
           {/* Test Interface - No Navigation UI */}

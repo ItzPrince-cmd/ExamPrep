@@ -33,8 +33,10 @@ export default function Signup() {
     }
 
     // Proceed to onboarding after successful signup
-    await signup(name, email, password, null, 'free');
-    setLocation("/onboarding");
+    const success = await signup(name, email, password, null, 'free');
+    if (success) {
+      setLocation("/onboarding");
+    }
   };
 
   const container = {

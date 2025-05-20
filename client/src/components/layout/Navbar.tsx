@@ -11,13 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
 
   const navItems = [
-    { path: "/", label: "Dashboard" },
+    { path: "/dashboard", label: "Dashboard" },
     { path: "/question-bank", label: "Question Bank" },
     { path: "/saved-papers", label: "Saved Papers" },
     { path: "/templates", label: "Templates" },
@@ -25,13 +27,18 @@ export function Navbar() {
   ];
 
   const isActive = (path: string) => location === path;
+  
+  const handleLogout = () => {
+    logout();
+    setLocation('/');
+  };
 
   return (
     <nav className="bg-background border-b border-border sticky top-0 z-30 w-full backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/">
+            <Link href="/dashboard">
               <div className="flex items-center gap-2 cursor-pointer">
                 <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-xl">
                   <GraduationCap size={24} />
@@ -89,7 +96,7 @@ export function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-destructive">
+                <DropdownMenuItem className="cursor-pointer text-destructive" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Logout</span>
                 </DropdownMenuItem>
@@ -168,7 +175,10 @@ export function Navbar() {
                       <span>Help & Support</span>
                     </div>
                   </Link>
-                  <button className="w-full text-left flex items-center px-4 py-2 text-base font-medium text-destructive hover:bg-muted">
+                  <button 
+                    className="w-full text-left flex items-center px-4 py-2 text-base font-medium text-destructive hover:bg-muted"
+                    onClick={handleLogout}
+                  >
                     <LogOut className="mr-3 h-5 w-5" />
                     <span>Logout</span>
                   </button>

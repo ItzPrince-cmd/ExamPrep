@@ -24,7 +24,7 @@ interface AuthState {
 // Auth context actions
 interface AuthActions {
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string, role: UserRole, subscriptionType: 'free' | 'basic' | 'premium') => Promise<void>;
+  signup: (name: string, email: string, password: string, role: UserRole, subscriptionType: 'free' | 'basic' | 'premium') => Promise<boolean>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<void>;
   clearError: () => void;
@@ -151,12 +151,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading: false,
         error: null,
       });
+      
+      return true;
     } catch (error) {
       setAuthState({
         ...authState,
         isLoading: false,
         error: 'Failed to create account',
       });
+      
+      return false;
     }
   };
 
